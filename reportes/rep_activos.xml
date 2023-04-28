@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+      <report
+          id="activofijosv.reporte_activos"
+          model="activofijosv.activo"
+          string="Reporte de Activos Fijos"
+          name="activofijosv.reporte_activos_view"
+          file="activofijosv.reporte_activos_view"
+          report_type="qweb-pdf"
+          menu="True"/>
+
+      <template id="activofijosv.reporte_activos_view">
+          <t t-call="web.html_container">
+              <t t-set="data_report_margin_top" t-value="12"/>
+              <t t-set="data_report_header_spacing" t-value="9"/>
+              <t t-set="data_report_dpi" t-value="110"/>
+
+              <t t-foreach="docs" t-as="o">
+                  <t t-call="web.internal_layout">
+                      <div class="page">
+                          <h2>.</h2>
+                          <h2>REPORTE DE ACTIVOS</h2>
+                          <b>Codigo: </b><span t-field="o.correlativo"/><br/>
+                          <b>Activo: </b><span t-field="o.name"/><br/>
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr >
+                                        <td><b> Fecha Compra: </b></td><td><span t-field="o.fecha_compra"/></td>
+                                        <td><b> Fecha Inicia Depreciacion: </b></td><td><span t-field="o.fch_inidepre"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Fecha Fin Depreciacion: </b></td><td><span t-field="o.fch_findepre"/></td>
+                                        <td><b> Fecha Baja: </b></td><td><span t-field="o.fecha_baja"/></td>
+                                    </tr>
+                                     <tr >
+                                        <td><b> Estado: </b></td><td><span t-field="o.estado"/></td>
+                                        <td><b> Tipo Activo: </b></td><td><span t-field="o.tipo_activo"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Rubro: </b></td><td><span t-field="o.rubro_id"/></td>
+                                        <td><b> Categoria: </b></td><td><span t-field="o.categoria_id"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Subcategoria: </b></td><td><span t-field="o.subcategoria_id"/></td>
+                                        <td><b> Ubicacion: </b></td><td><span t-field="o.ubicacion_id"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Departamento: </b></td><td><span t-field="o.departamento_id"/></td>
+                                        <td><b> Antiguedad en anos: </b></td><td><span t-field="o.activousado_id"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Costo: </b></td><td><span t-field="o.costo"/></td>
+                                        <td><b> Valor Estimado Nuevo: </b></td><td><span t-field="o.valestimadonew"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Valor a Depreciar: </b></td><td><span t-field="o.valoradpreciar"/></td>
+                                        <td><b> Valor Residuo: </b></td><td><span t-field="o.valoresiduo"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Vida util en Anos: </b></td><td><span t-field="o.vidautilanos"/></td>
+                                        <td><b> Vida util en Meses: </b></td><td><span t-field="o.vidautilmeses"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Depreciacion Mensual: </b></td><td><span t-field="o.dpreciaxmes"/></td>
+                                        <td><b> Codigo Alterno: </b></td><td><span t-field="o.codigo_alterno"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Serie: </b></td><td><span t-field="o.serie"/></td>
+                                        <td><b> Marca: </b></td><td><span t-field="o.marca"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td><b> Placa: </b></td><td><span t-field="o.placa"/></td>
+                                        <td><b> Porcentaje depreciacion: </b></td><td><span t-field="o.depreciaporcen"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <b>Descripcion: </b><span t-field="o.descripcion"/><br/>
+                            <br/>
+                            <b>Usuario: </b><span t-field="o.empleado_id"/><br/>
+
+                      </div>
+                  </t>
+
+              </t>
+
+          </t>
+
+      </template>
+      <record id="paperformat_frenchcheck" model="report.paperformat">
+            <field name="name">French Bank Check</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">80</field>
+            <field name="page_width">175</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">3</field>
+            <field name="margin_bottom">3</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">3</field>
+            <field name="dpi">80</field>
+      </record>
+
+  </data>
+</odoo>

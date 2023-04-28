@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- Vista Arbol de Activo -->
+    <record model="ir.ui.view" id="activofijosv.activo_tree">
+      <field name="name">activofijosv.activo.tree</field>
+      <field name="model">activofijosv.activo</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="correlativo"/>
+          <field name="name"/>
+          <field name="marca"/>
+          <field name="modelo"/>
+          <field name="serie"/>
+          <field name="descripcion"/>
+          <field name="fecha_compra"/>
+          <field name="fecha_baja"/>
+          <field name="costo"/>
+          <field name="placa"/>
+          <field name="codigo_alterno"/>
+          <field name="estado"/>
+          <field name="tipo_activo"/>
+        </tree>
+      </field>
+    </record>
+    <!-- Vista Formulario de Activo -->
+    <record model="ir.ui.view" id="activofijosv.activo_form">
+      <field name="name">activofijosv.activo.form</field>
+      <field name="model">activofijosv.activo</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <field name ="imagen" widget="image"/>
+                <group colspan="2" col="4">
+                  <field name="name"/>
+                  <field name="fecha_compra"/>
+                  <field name="estado"/>
+                  <field name="costo"/>
+                  <field name="tipo_activo"/>
+                  <field name="rubro_id" on_change="_limpiar()"/>
+                  <field name="categoria_id" domain="[('rubro_id','=',rubro_id)]"/>
+                  <field name="subcategoria_id" domain="[('categoria_id','=',categoria_id)]"/>
+                  <field name="departamento_id"/>
+                  <field name="ubicacion_id"/>
+                  <field name="correlativo"/>
+
+                </group>
+                <notebook>
+                    <page string="Calculo Contable">
+                        <group colspan="2" col="4">
+                            <field name="fch_inidepre"/>
+                            <field name="fch_findepre" on_change="_fechavence"/>
+                            <field name="depreciaporcen"/>
+                            <field name="vidautilanos" attrs="{'readonly': True}"/>
+                            <field name="vidautilmeses" attrs="{'readonly': True}"/>
+                            <field name="activousado_id" attrs="{'invisible': [('estado', '=', '0')]}"/>
+                            <field name="valestimadonew" attrs="{'invisible': [('estado', '=', '0')]}"/>
+                            <field name="valoradpreciar"/>
+                            <field name="valoresiduo"/>
+                            <field name="dpreciaxmes" attrs="{'readonly': True}"/>
+
+                        </group>
+                    </page>
+                    <page string="Detalles del Activo">
+                        <group colspan="2" col="4">
+                            <field name="marca"/>
+                            <field name="modelo"/>        <!-- campo MODELO Estradaj -->
+                            <field name="serie"/>
+                            <field name="proveedor"/>       <!-- campo PROVEEDOR Estradaj -->
+                            <field name="placa"/>
+                        </group>
+                    </page>
+                    <page string="Otros">
+                        <group colspan="2" col="4">
+                            <field name="codigo_alterno"/>
+                            <field name="empleado_id"/>
+                            <field name="fecha_baja"/>
+                            <field name="descripcion"/>
+
+                        </group>
+                    </page>
+
+                </notebook>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Vista Arbol de Rubros -->
+    <record model="ir.ui.view" id="activofijosv.rubros_tree">
+      <field name="name">activofijosv.rubros.tree</field>
+      <field name="model">activofijosv.rubros</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="prefijorubro"/>
+          <field name="depreciaminima"/>
+          <field name="vidautil"/>
+
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Formulario de Rubros -->
+    <record model="ir.ui.view" id="activofijosv.rubros_form">
+      <field name="name">activofijosv.rubros.form</field>
+      <field name="model">activofijosv.rubros</field>
+      <field name="arch" type="xml">
+
+          <form string="Rubros">
+            <group colspan="2" col="2">
+                <field name="name"/>
+                <field name="prefijorubro"/>
+                <field name="depreciaminima"/>
+                <field name="vidautil"/>
+            </group>
+            <notebook>
+                <page string="Activos Relacionados">
+                    <field name="activorub_id"/>
+                </page>
+            </notebook>
+          </form>
+
+      </field>
+    </record>
+
+    <!-- Vista Arbol de Categoria -->
+    <record model="ir.ui.view" id="activofijosv.categoria_tree">
+      <field name="name">activofijosv.categoria.tree</field>
+      <field name="model">activofijosv.categoria</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="prefijocategoria"/>
+          <field name="rubro_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Formulario Categoria-->
+    <record model="ir.ui.view" id="activofijosv.categoria_form">
+      <field name="name">activofijosv.categoria.form</field>
+      <field name="model">activofijosv.categoria</field>
+      <field name="arch" type="xml">
+        <form>
+            <group colspan="2" col="2">
+                <field name="name"/>
+                <field name="prefijocategoria" style="width:30%"/>
+                <field name="rubro_id" style="width:30%"/>
+                <field name="activocat_id"/>
+
+            </group>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- Vista Arbol de SubCategoria -->
+    <record model="ir.ui.view" id="activofijosv.subcategoria_tree">
+      <field name="name">activofijosv.subcategoria.tree</field>
+      <field name="model">activofijosv.subcategoria</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+            <field name="prefijosubcategoria"/>
+            <field name="categoria_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Formulario SubCategoria-->
+    <record model="ir.ui.view" id="activofijosv.subcategoria_form">
+      <field name="name">activofijosv.subcategoria.form</field>
+      <field name="model">activofijosv.subcategoria</field>
+      <field name="arch" type="xml">
+        <form>
+            <group colspan="2" col="2">
+                <field name="name"/>
+                <field name="prefijosubcategoria"/>
+                <field name="categoria_id" style="width:30%"/>
+            </group>
+        </form>
+      </field>
+    </record>
+
+    <!-- Vista Arbol de Ubicacion -->
+    <record model="ir.ui.view" id="activofijosv.ubicacion_tree">
+      <field name="name">activofijosv.ubicacion.tree</field>
+      <field name="model">activofijosv.ubicacion</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="prefijoubicacion"/>
+
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Formulario Ubicacion-->
+    <record model="ir.ui.view" id="activofijosv.ubicacion_form">
+      <field name="name">activofijosv.ubicacion.form</field>
+      <field name="model">activofijosv.ubicacion</field>
+      <field name="arch" type="xml">
+        <form>
+            <group colspan="2" col="2">
+                <field name="name"/>
+                <field name="prefijoubicacion"/>
+
+            </group>
+        </form>
+      </field>
+    </record>
+
+
+        <!-- Vista Arbol de Activo Usado -->
+    <record model="ir.ui.view" id="activofijosv.ubicacion_tree">
+      <field name="name">activofijosv.usados.tree</field>
+      <field name="model">activofijosv.usados</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name" string="Anos de Antiguedad"/>
+          <field name="porcentaje"/>
+
+        </tree>
+      </field>
+    </record>
+
+    <!-- Vista Formulario Activo Usado-->
+    <record model="ir.ui.view" id="activofijosv.ubicacion_form">
+      <field name="name">activofijosv.usados.form</field>
+      <field name="model">activofijosv.usados</field>
+      <field name="arch" type="xml">
+        <form>
+            <group colspan="2" col="2">
+                <field name="name" string="Anos de Antiguedad"/>
+                <field name="porcentaje"/>
+
+            </group>
+        </form>
+      </field>
+    </record>
+
+
+
+   <!-- Vista Formulario Departamento Vista Heredada, Agrega campo nuevo a esta vista-->
+
+    <record model="ir.ui.view" id="activofijosv.department_form">
+      <field name="name">hr.department.form</field>
+      <field name="model">hr.department</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="hr.view_department_form"/>
+      <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <field name="prefijodepto"/>
+            </field>
+      </field>
+    </record>
+
+      <!-- Vista Formulario Compania Vista Heredada, Agrega campo nuevo a esta vista-->
+
+    <record model="ir.ui.view" id="activofijosv.company_form">
+      <field name="name">res.company.form</field>
+      <field name="model">res.company</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+            <field name="report_header" position="after">
+                <field name="prefijocompany"/>
+            </field>
+      </field>
+    </record>
+
+<!--
+    <record model="ir.ui.view" id="activofijosv.reportes_form">
+      <field name="name">activofijosv.reportes.form</field>
+      <field name="model">activofijosv.reportes</field>
+      <field name="arch" type="xml">
+        <form string="Formulario de Reporte">
+            <sheet>
+                 <group>
+                     <field name="titulo"></field>
+                     <field name="descripcion"></field>
+                     <field name="fechaini"></field>
+                     <field name="fechafin"></field>
+                 </group>
+            </sheet>
+        </form>
+        <footer>
+            <button name='accion_reporte' string='Generar Reporte' class='oe_highlight' type='object'/>
+
+            <span class="or_cancel"> or
+                      <button special='cancel' string='Cancelar' class='oe_link oe_inline' type='object'/>
+            </span>
+        </footer>
+      </field>
+    </record>
+-->
+
+
+ <!-- ACCIONES DE VENTANA -->
+
+
+    <record model="ir.actions.act_window" id="activofijosv.activo_action_window">
+      <field name="name">activofijosv.activo.action_window</field>
+      <field name="res_model">activofijosv.activo</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="activofijosv.rubros_action_window">
+      <field name="name">activofijosv.rubros.action_window</field>
+      <field name="res_model">activofijosv.rubros</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="activofijosv.categoria_action_window">
+      <field name="name">activofijosv.categoria.action_window</field>
+      <field name="res_model">activofijosv.categoria</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="activofijosv.subcategoria_action_window">
+      <field name="name">activofijosv.subcategoria.action_window</field>
+      <field name="res_model">activofijosv.subcategoria</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="activofijosv.ubicacion_action_window">
+      <field name="name">activofijosv.ubicacion.action_window</field>
+      <field name="res_model">activofijosv.ubicacion</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="activofijosv.usados_action_window">
+      <field name="name">activofijosv.usados.action_window</field>
+      <field name="res_model">activofijosv.usados</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+<!--
+    <record model="ir.actions.act_window" id="activofijosv.reportes_action_window">
+      <field name="name">activofijosv.reportes.action_window</field>
+      <field name="res_model">activofijosv.reportes</field>
+      <field name="view_mode">form</field>
+    </record>
+-->
+<!-- Top menu item -->
+
+    <menuitem name="Activo FijoSV" id="activofijosv_menu_root"/>
+
+    <!-- menu categories -->
+    <menuitem name="Activo" id="activofijosv_activo_menu" parent="activofijosv_menu_root"/>
+    <menuitem name="Mantenimientos" id="activofijosv_mantenimiento_menu" parent="activofijosv_menu_root"/>
+<!-- <menuitem name="Reportes" id="activofijosv_reportes_menu" parent="activofijosv_menu_root"/>-->
+
+    <!-- Submenus -->
+    <menuitem name="Activos" id="activofijosv_activo_submenu" parent="activofijosv_activo_menu" action="activofijosv.activo_action_window"/>
+    <menuitem name="Rubros" id="activofijosv_rubros_submenu" parent="activofijosv_mantenimiento_menu" action="activofijosv.rubros_action_window"/>
+    <menuitem name="Categorias" id="activofijosv_categoria_submenu" parent="activofijosv_mantenimiento_menu" action="activofijosv.categoria_action_window"/>
+    <menuitem name="SubCategoria" id="activofijosv_subcategoria_submenu" parent="activofijosv_mantenimiento_menu" action="activofijosv.subcategoria_action_window"/>
+    <menuitem name="Ubicacion" id="activofijosv_ubicacion_submenu" parent="activofijosv_mantenimiento_menu" action="activofijosv.ubicacion_action_window"/>
+    <menuitem name="Activo Usado" id="activofijosv_usados_submenu" parent="activofijosv_mantenimiento_menu" action="activofijosv.usados_action_window"/>
+  <!--  <menuitem name="Reporte activos" id="activofijosv_reportes_submenu" parent="activofijosv_reportes_menu" action="activofijosv.reportes_action_window"/>-->
+
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="activofijosv.list">
+      <field name="name">activofijosv list</field>
+      <field name="model">activofijosv.activofijosv</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="activofijosv.action_window">
+      <field name="name">activofijosv window</field>
+      <field name="res_model">activofijosv.activofijosv</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="activofijosv.action_server">
+      <field name="name">activofijosv server</field>
+      <field name="model_id" ref="model_activofijosv_activofijosv"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="activofijosv" id="activofijosv.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="activofijosv.menu_1" parent="activofijosv.menu_root"/>
+    <menuitem name="Menu 2" id="activofijosv.menu_2" parent="activofijosv.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="activofijosv.menu_1_list" parent="activofijosv.menu_1"
+              action="activofijosv.action_window"/>
+    <menuitem name="Server to list" id="activofijosv" parent="activofijosv.menu_2"
+              action="activofijosv.action_server"/>
+    -->
+  </data>
+</odoo>

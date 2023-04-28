@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="activofijosv.reportes_form">
+        <field name="name">activofijosv.reportes.form</field>
+        <field name="model">activofijosv.reportes</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                      <field name="titulo"></field>
+                      <field name="descripcion"></field>
+                      <field name="fechaini"></field>
+                      <field name="fechafin"></field>
+                </group>
+
+                <footer>
+                    <button name='accion_reporte' string='Generar Reporte' class='oe_highlight' type='object'/>
+                    <button name='exportar_reporte' string='Exportar Excel' class='oe_highlight' type='object'/>
+                    <span class="or_cancel" > or <button special="cancel" string="Cancel" type="object" class="oe_link oe_inline"/>
+                    </span>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_excel_views" model="ir.ui.view">
+		<field name="name">excel.report.out</field>
+		<field name="model">excel.report.out</field>
+		<field name="arch" type="xml">
+			<form string="Export Purchase Orders">
+				<group>
+					<field name="file_name" filename="reportexls_data" />
+					<field name="reportexls_data" invisible="1" />
+				</group>
+				<footer>
+					<button string="Cancel" class="btn-primary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+
+        <!-- Declarando el Action -->
+        <!--   -->
+        <!-- -->
+        <!-- -->
+    <record model="ir.actions.act_window" id="activofijosv.reportes_action_window">
+        <field name="name">activofijosv.reportes.action_window</field>
+        <field name="res_model">activofijosv.reportes</field>
+        <field name="view_mode">form</field>
+        <field name="view_type">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="activofijosv.reportes_form"/>
+        <field name="target">new</field>
+    </record>
+
+         <!-- Declarando el MENU Categorias-->
+    <menuitem name="Reportes" id="activofijosv_reportes_menu" parent="activofijosv_menu_root" />
+    <menuitem name="Activos" id="activofijosv_rep_activos_submenu" parent="activofijosv_reportes_menu" action="activofijosv.reportes_action_window"/>
+  </data>
+</odoo>
